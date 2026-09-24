@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word Form Master — 100 Questions</title>
+<style>
+:root{
+  --bg:#f3f8fd; --card:#ffffff; --text:#1b2a3a; --muted:#64748b;
+  --primary:#4a90d9; --primary-dark:#3577bd; --primary-soft:#dfeefc; --primary-soft2:#eef6fe;
+  --border:#dbe7f4; --ok:#178a4c; --ok-bg:#e6f7ed; --bad:#c93c3c; --bad-bg:#fdeceb;
+  --warn:#b8860b; --warn-bg:#fdf6e3;
+  --shadow:0 3px 14px rgba(38,86,145,.08);
+}
+[data-theme="dark"]{
+  --bg:#0f1720; --card:#17222e; --text:#e6eef7; --muted:#93a6bb;
+  --primary:#6aa9e9; --primary-dark:#8bbdf0; --primary-soft:#1f3348; --primary-soft2:#1a2a3b;
+  --border:#26374a; --ok:#4bd486; --ok-bg:#13301f; --bad:#ff8585; --bad-bg:#3a1c1c;
+  --warn:#e5b84b; --warn-bg:#332a12;
+  --shadow:0 3px 14px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:19px;margin:26px 0 12px}
+h3{font-size:16px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:238px;flex:0 0 238px;background:var(--card);border-right:1px solid var(--border);
+  padding:22px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.brand{font-weight:700;font-size:17px;color:var(--primary);margin-bottom:3px}
+.brand-sub{font-size:11.5px;color:var(--muted);margin-bottom:20px;line-height:1.4}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;
+  cursor:pointer;color:var(--muted);font-size:14.5px;font-weight:500;margin-bottom:3px;
+  transition:.15s;user-select:none;
+}
+.nav-item:hover{background:var(--primary-soft2);color:var(--primary)}
+.nav-item.active{background:var(--primary-soft);color:var(--primary-dark);font-weight:700}
+.main{flex:1;padding:26px 30px 80px;max-width:1150px;min-width:0}
+
+/* Cards / stats */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:16px;margin-top:18px}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;
+  box-shadow:var(--shadow);cursor:pointer;transition:.18s;
+}
+.card:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:0 8px 22px rgba(74,144,217,.18)}
+.card .ic{font-size:24px}
+.card h3{margin:8px 0 4px;font-size:16.5px}
+.card p{margin:0;color:var(--muted);font-size:13.5px}
+.card .mini{margin-top:10px;font-size:12.5px;color:var(--primary-dark);font-weight:600}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:8px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.stat-num{font-size:21px;font-weight:700;color:var(--primary-dark)}
+.stat-lbl{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* Buttons */
+button{font-family:inherit}
+.btn{
+  background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 18px;
+  font-size:14.5px;font-weight:600;cursor:pointer;transition:.15s;
+}
+.btn:hover{background:var(--primary-dark)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.btn.ghost:hover{background:var(--primary-soft)}
+.btn.gray{background:var(--primary-soft);color:var(--primary-dark)}
+.btn.gray:hover{background:var(--border)}
+.btn.ok{background:var(--ok)}
+.btn.bad{background:var(--bad)}
+.btn.big{padding:14px 24px;font-size:15.5px;border-radius:12px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+/* Panels */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:var(--shadow);max-width:820px}
+.field{margin-bottom:18px}
+.field > label.title{display:block;font-weight:700;font-size:14px;margin-bottom:9px}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{display:flex;align-items:center;gap:7px;border:1.5px solid var(--border);border-radius:10px;padding:8px 13px;font-size:14px;cursor:pointer}
+.chip:hover{border-color:var(--primary)}
+.chip input{accent-color:var(--primary)}
+
+/* Practice */
+.q-wrap{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;box-shadow:var(--shadow);max-width:860px}
+.q-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;color:var(--muted);margin-bottom:10px;flex-wrap:wrap}
+.q-sentence{font-size:20px;font-weight:500;line-height:1.7;margin:18px 0 8px}
+.blank{
+  display:inline-block;min-width:130px;border-bottom:2.5px dashed var(--primary);
+  padding:0 8px;color:var(--primary-dark);font-weight:700;text-align:center;
+}
+.blank.correct{color:var(--ok);border-bottom-color:var(--ok)}
+.blank.wrong{color:var(--bad);border-bottom-color:var(--bad)}
+.base-word{
+  display:inline-block;background:var(--warn-bg);color:var(--warn);border:1.5px solid var(--warn);
+  padding:6px 14px;border-radius:10px;font-weight:700;font-size:14px;letter-spacing:.5px;
+  margin:14px 0 22px;
+}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;margin-top:8px}
+.answer-input{
+  flex:1;min-width:220px;font-size:17px;font-family:inherit;font-weight:600;
+  padding:14px 16px;border-radius:12px;border:2px solid var(--border);
+  background:var(--card);color:var(--text);outline:none;transition:.15s;
+}
+.answer-input:focus{border-color:var(--primary)}
+.answer-input.ok{border-color:var(--ok);background:var(--ok-bg)}
+.answer-input.no{border-color:var(--bad);background:var(--bad-bg)}
+.answer-input:disabled{cursor:default;opacity:.95}
+
+.fb{margin-top:18px;border-radius:12px;padding:16px 18px;font-size:14.5px;animation:pop .2s ease}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fb.ok{background:var(--ok-bg);border:1px solid var(--ok);color:var(--ok)}
+.fb.no{background:var(--bad-bg);border:1px solid var(--bad);color:var(--bad)}
+.fb .fb-title{font-weight:700;font-size:15px;margin-bottom:6px}
+.fb .correct-ans{color:var(--text);font-weight:600;margin:8px 0;font-size:15px}
+.fb .exp{color:var(--text);margin-top:8px;font-size:13.5px;line-height:1.6}
+.fb .exp::before{content:"💡 ";font-style:normal}
+
+.bar{height:8px;background:var(--primary-soft);border-radius:20px;overflow:hidden;margin:10px 0 0}
+.bar > i{display:block;height:100%;background:var(--primary);border-radius:20px;transition:width .3s}
+
+/* Result */
+.score-hero{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px;box-shadow:var(--shadow);text-align:center;max-width:820px}
+.score-big{font-size:50px;font-weight:800;color:var(--primary-dark);line-height:1.1}
+.score-msg{font-size:16px;margin-top:8px;font-weight:600}
+
+/* Table & review */
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:left}
+th{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+td.num,th.num{text-align:right}
+.review-item{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px 16px;margin-bottom:11px}
+.review-item .qq{font-weight:600;font-size:14.5px}
+.review-item .aa{font-size:13.5px;margin-top:7px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin-right:6px}
+.tag.ok{background:var(--ok-bg);color:var(--ok)}
+.tag.no{background:var(--bad-bg);color:var(--bad)}
+.muted{color:var(--muted);font-size:13.5px}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty .ic{font-size:40px;display:block;margin-bottom:10px}
+.pill{display:inline-block;font-size:11.5px;background:var(--primary-soft);color:var(--primary-dark);padding:2px 10px;border-radius:20px;font-weight:600}
+hr{border:none;border-top:1px solid var(--border);margin:22px 0}
+
+/* Inline bolding inside explanation */
+b{color:var(--primary-dark)}
+
+@media (max-width:860px){
+  .layout{flex-direction:column}
+  .sidebar{
+    position:fixed;bottom:0;left:0;right:0;top:auto;width:100%;height:auto;flex:none;
+    border-right:none;border-top:1px solid var(--border);padding:6px 8px;z-index:60;
+  }
+  .brand,.brand-sub{display:none}
+  #nav{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none}
+  #nav::-webkit-scrollbar{display:none}
+  .nav-item{flex-direction:column;gap:2px;font-size:10px;padding:7px 12px;margin:0;white-space:nowrap;border-radius:11px}
+  .nav-item span{font-size:10px}
+  .main{padding:16px 14px 96px}
+  h1{font-size:21px}
+  .q-wrap{padding:18px}
+  .q-sentence{font-size:17px}
+  .score-big{font-size:38px}
+  .answer-input{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">📘 Word Form Master</div>
+    <div class="brand-sub">100 câu · Mixed Word Form<br>+ Verb Forms</div>
+    <nav id="nav">
+      <div class="nav-item" data-view="dashboard">🏠<span>Dashboard</span></div>
+      <div class="nav-item" data-view="practice">✏️<span>Practice</span></div>
+      <div class="nav-item" data-view="mistakes">🔁<span>Mistakes</span></div>
+      <div class="nav-item" data-view="progress">📊<span>Progress</span></div>
+      <div class="nav-item" data-view="settings">⚙️<span>Settings</span></div>
+    </nav>
+  </aside>
+  <main class="main" id="view"></main>
+</div>
+
+<script>
+/* =========================================================
+   1. QUESTION BANK — 100 questions
+   ========================================================= */
+const QUESTIONS = [
+{id:1,q:"Regular practice is essential for __________ success.",base:"ACADEMIC",ans:"academic",type:"adj.",cat:"Adjective",exp:"Đứng trước <b>success</b> nên cần tính từ."},
+{id:2,q:"The course has several important __________, including reading and speaking.",base:"COMPONENT",ans:"components",type:"plural noun",cat:"Noun",exp:"Sau <b>several</b> phải dùng danh từ số nhiều."},
+{id:3,q:"Students can __________ the knowledge they learn in class to real-life situations.",base:"TRANSFER",ans:"transfer",type:"verb",cat:"Verb",exp:"Sau <b>can</b> dùng động từ nguyên mẫu."},
+{id:4,q:"Reading every day can bring __________ benefits to your language skills.",base:"LONG-TERM",ans:"long-term",type:"adj.",cat:"Adjective",exp:"Bổ nghĩa cho <b>benefits</b> → tính từ ghép <b>long-term</b>."},
+{id:5,q:"Understanding the __________ of an essay helps students organize their ideas.",base:"STRUCTURE",ans:"structure",type:"noun",cat:"Noun",exp:"Sau <b>the</b> và trước <b>of an essay</b> cần danh từ."},
+{id:6,q:"This is a very __________ method for improving pronunciation.",base:"EFFECT",ans:"effective",type:"adj.",cat:"Adjective",exp:"Sau <b>very</b> cần tính từ."},
+{id:7,q:"The teacher introduced a useful __________ for remembering new vocabulary.",base:"TECHNICAL",ans:"technique",type:"noun",cat:"Noun",exp:"Sau <b>a useful</b> cần danh từ số ít → <b>technique</b>."},
+{id:8,q:"Teachers use different activities to __________ students' speaking abilities.",base:"ASSESS",ans:"assess",type:"verb",cat:"Verb",exp:"Sau <b>to</b> (mục đích) dùng V nguyên mẫu."},
+{id:9,q:"The government introduced an education __________ to improve teaching quality.",base:"REFORM",ans:"reform",type:"noun",cat:"Noun",exp:"Cụm <b>an education reform</b> = một cuộc cải cách giáo dục."},
+{id:10,q:"Standardized tests are often used to __________ students' academic progress.",base:"MEASURE",ans:"measure",type:"verb",cat:"Verb",exp:"Sau <b>to</b> dùng V nguyên mẫu."},
+{id:11,q:"__________ new words without understanding them may not be very useful.",base:"MEMORIZE",ans:"Memorizing",alt:["memorising"],type:"V-ing/gerund",cat:"Verb-form",exp:"Cả cụm làm <b>chủ ngữ</b> → dùng danh động từ V-ing."},
+{id:12,q:"Students should __________ what they learn to practical situations.",base:"APPLICABLE",ans:"apply",type:"verb",cat:"Verb",exp:"Sau <b>should</b> dùng V nguyên mẫu."},
+{id:13,q:"Some schools are exploring __________ methods of assessment.",base:"ALTERNATE",ans:"alternative",type:"adj.",cat:"Adjective",exp:"Bổ nghĩa cho <b>methods</b> → tính từ <b>alternative</b>."},
+{id:14,q:"The students __________ whether exams were necessary.",base:"DEBATE",ans:"debated",type:"past verb",cat:"Verb-form",exp:"Hành động xảy ra trong quá khứ → thì quá khứ đơn."},
+{id:15,q:"Vietnam has a __________ culture with many traditional festivals.",base:"UNIQUE",ans:"unique",type:"adj.",cat:"Adjective",exp:"Bổ nghĩa cho <b>culture</b>."},
+{id:16,q:"Visitors can buy traditional __________ in many Vietnamese villages.",base:"CRAFT",ans:"crafts",type:"plural noun",cat:"Noun",exp:"<b>traditional crafts</b> = đồ thủ công truyền thống (số nhiều)."},
+{id:17,q:"We booked our __________ near the beach before the trip.",base:"ACCOMMODATE",ans:"accommodation",type:"noun",cat:"Noun",exp:"Sau <b>our</b> cần danh từ."},
+{id:18,q:"The long journey through the mountains was extremely __________.",base:"EXHAUST",ans:"exhausting",type:"adjective",cat:"Adjective",exp:"Chuyến đi <b>gây mệt mỏi</b> → tính từ -ing."},
+{id:19,q:"The hotel provides only __________ facilities, such as clean rooms and hot water.",base:"BASIC",ans:"basic",type:"adj.",cat:"Adjective",exp:"Bổ nghĩa cho <b>facilities</b>."},
+{id:20,q:"Please keep your personal __________ safe while travelling.",base:"POSSESS",ans:"possessions",type:"plural noun",cat:"Noun",exp:"<b>personal possessions</b> = tài sản/đồ đạc cá nhân."},
+{id:21,q:"We had a __________ time exploring the beaches of Vũng Tàu.",base:"FABULOUS",ans:"fabulous",type:"adj.",cat:"Adjective",exp:"Sau <b>a</b> + noun phrase → tính từ."},
+{id:22,q:"The market offers a wide __________ of traditional Vietnamese food.",base:"RANGE",ans:"range",type:"noun",cat:"Noun",exp:"Cụm cố định <b>a wide range of</b> = rất nhiều loại."},
+{id:23,q:"The tourists were __________ to learn more about Vietnamese culture.",base:"EAGER",ans:"eager",type:"adj.",cat:"Adjective",exp:"Sau <b>were</b> cần tính từ."},
+{id:24,q:"Travellers should take necessary __________ to protect themselves from theft.",base:"PRECAUTION",ans:"precautions",type:"plural noun",cat:"Noun",exp:"Cụm <b>take precautions</b> = có biện pháp phòng ngừa."},
+{id:25,q:"Our __________ is scheduled for six o'clock tomorrow morning.",base:"DEPART",ans:"departure",type:"noun",cat:"Noun",exp:"Sau <b>our</b> cần danh từ."},
+{id:26,q:"Make sure your passport does not __________ before your trip.",base:"EXPIRATION",ans:"expire",type:"verb",cat:"Verb",exp:"Sau <b>does not</b> dùng V nguyên mẫu."},
+{id:27,q:"Tourists may be __________ to scams in unfamiliar places.",base:"VULNERABILITY",ans:"vulnerable",type:"adj.",cat:"Adjective",exp:"Sau <b>may be</b> cần tính từ."},
+{id:28,q:"__________ travel insurance can provide extra protection during a trip.",base:"PURCHASE",ans:"Purchasing",type:"gerund",cat:"Verb-form",exp:"V-ing làm <b>chủ ngữ</b>."},
+{id:29,q:"Only __________ travel agents can issue certain official documents.",base:"AUTHORIZE",ans:"authorized",alt:["authorised"],type:"adjective",cat:"Adjective",exp:"Bổ nghĩa cho <b>travel agents</b>."},
+{id:30,q:"Do not __________ that everyone you meet is trustworthy.",base:"ASSUMPTION",ans:"assume",type:"verb",cat:"Verb",exp:"Sau <b>do not</b> dùng V nguyên mẫu."},
+{id:31,q:"The hotel staff gave us a warm and __________ welcome.",base:"SINCERITY",ans:"sincere",type:"adj.",cat:"Adjective",exp:"Sau <b>warm and</b> cần tính từ song song."},
+{id:32,q:"The film's __________ worked closely with the actors.",base:"DIRECT",ans:"directors",type:"plural noun",cat:"Noun",exp:"<b>The film's directors</b> = các đạo diễn."},
+{id:33,q:"We stayed until the end of the movie to watch the __________.",base:"CREDIT",ans:"credits",type:"plural noun",cat:"Noun",exp:"<b>watch the credits</b> = xem phần giới thiệu cuối phim."},
+{id:34,q:"Good communication is __________ to the success of a film project.",base:"CRUCIAL",ans:"crucial",type:"adj.",cat:"Adjective",exp:"Sau <b>is</b> cần tính từ → <b>crucial</b>."},
+{id:35,q:"Makeup and costumes can completely __________ an actor into a different character.",base:"TRANSFORMATION",ans:"transform",type:"verb",cat:"Verb",exp:"Sau <b>can</b> dùng V nguyên mẫu."},
+{id:36,q:"The final __________ of the movie was filmed at sunset.",base:"SEE",ans:"scene",type:"noun",cat:"Noun",exp:"Cụm <b>the final scene</b> = cảnh cuối phim."},
+{id:37,q:"The film __________ lasted almost six months.",base:"PRODUCE",ans:"production",type:"noun",cat:"Noun",exp:"<b>film production</b> = quá trình sản xuất phim."},
+{id:38,q:"The interview was filmed __________ for the television channel.",base:"EXCLUSIVE",ans:"exclusively",type:"adverb",cat:"Adverb",exp:"Bổ nghĩa cho động từ <b>was filmed</b>."},
+{id:39,q:"Many famous movies are made in large film __________.",base:"STUDIO",ans:"studios",type:"plural noun",cat:"Noun",exp:"Sau <b>large film</b> cần danh từ số nhiều."},
+{id:40,q:"His main __________ was to become a successful film director.",base:"AMBITION",ans:"ambition",type:"noun",cat:"Noun",exp:"Sau <b>main</b> cần danh từ."},
+{id:41,q:"Her __________ for storytelling inspired her to study filmmaking.",base:"PASSIONATE",ans:"passion",type:"noun",cat:"Noun",exp:"Cụm <b>passion for</b> = niềm đam mê với điều gì."},
+{id:42,q:"The young director made his __________ with a short independent film.",base:"DEBUT",ans:"debut",type:"noun",cat:"Noun",exp:"Cụm <b>make one's debut</b> = ra mắt lần đầu."},
+{id:43,q:"He became one of the most __________ filmmakers of his generation.",base:"INFLUENCE",ans:"influential",type:"adj.",cat:"Adjective",exp:"Sau <b>most</b> + tính từ → <b>influential</b>."},
+{id:44,q:"The film aims to __________ important stories from the past.",base:"PRESERVATION",ans:"preserve",type:"verb",cat:"Verb",exp:"Sau <b>aims to</b> dùng V nguyên mẫu."},
+{id:45,q:"The film __________ the director's passion for science fiction.",base:"REPRESENT",ans:"represents",type:"present simple",cat:"Verb-form",exp:"Chủ ngữ <b>The film</b> số ít → thêm -s."},
+{id:46,q:"The journey in the movie is a __________ for personal growth.",base:"METAPHORICAL",ans:"metaphor",type:"noun",cat:"Noun",exp:"Sau <b>a</b> cần danh từ số ít."},
+{id:47,q:"His childhood experiences became a major source of __________ for his films.",base:"INSPIRE",ans:"inspiration",type:"noun",cat:"Noun",exp:"Sau <b>source of</b> cần danh từ."},
+{id:48,q:"Students who study regularly are often more __________ successful.",base:"ACADEMIC",ans:"academically",type:"adverb",cat:"Adverb",exp:"Bổ nghĩa cho tính từ <b>successful</b> → trạng từ."},
+{id:49,q:"The new study method can be used __________ in the classroom.",base:"EFFECT",ans:"effectively",type:"adverb",cat:"Adverb",exp:"Bổ nghĩa cho động từ <b>used</b>."},
+{id:50,q:"The tourists were __________ waiting for the tour to begin.",base:"EAGER",ans:"eagerly",type:"adverb",cat:"Adverb",exp:"Bổ nghĩa cho động từ <b>waiting</b>."},
+{id:51,q:"The teacher __________ the students' speaking abilities yesterday.",base:"ASSESS",ans:"assessed",type:"past verb",cat:"Verb-form",exp:"<b>yesterday</b> → thì quá khứ đơn."},
+{id:52,q:"The government __________ the education system several years ago.",base:"REFORM",ans:"reformed",type:"past verb",cat:"Verb-form",exp:"Hành động xảy ra trong quá khứ."},
+{id:53,q:"Teachers regularly __________ students' academic progress.",base:"MEASURE",ans:"measure",type:"present simple",cat:"Verb-form",exp:"Chủ ngữ <b>Teachers</b> số nhiều → V nguyên mẫu."},
+{id:54,q:"Last semester, students __________ classroom knowledge to real-life situations.",base:"TRANSFER",ans:"transferred",type:"past verb",cat:"Verb-form",exp:"<b>Last semester</b> → quá khứ đơn."},
+{id:55,q:"She __________ what she had learned in class to her daily life.",base:"APPLY",ans:"applied",type:"past verb",cat:"Verb-form",exp:"Hành động đã xảy ra → thì quá khứ đơn."},
+{id:56,q:"His passport __________ next month.",base:"EXPIRE",ans:"expires",type:"present simple",cat:"Verb-form",exp:"Chủ ngữ <b>His passport</b> số ít → thêm -s."},
+{id:57,q:"We __________ that the place would be safe, but we were wrong.",base:"ASSUME",ans:"assumed",type:"past verb",cat:"Verb-form",exp:"Sự việc kể lại trong quá khứ."},
+{id:58,q:"They are currently __________ travel insurance online.",base:"PURCHASE",ans:"purchasing",type:"present continuous",cat:"Verb-form",exp:"<b>are currently + V-ing</b> → thì hiện tại tiếp diễn."},
+{id:59,q:"The government __________ only certain agents to issue the documents.",base:"AUTHORIZE",ans:"authorized",alt:["authorised"],type:"past verb",cat:"Verb-form",exp:"Hành động đã xảy ra trong quá khứ."},
+{id:60,q:"You should never __________ that strangers are trustworthy.",base:"ASSUME",ans:"assume",type:"verb",cat:"Verb",exp:"Sau <b>should never</b> dùng V nguyên mẫu."},
+{id:61,q:"The film __________ the director's passion for science fiction.",base:"REPRESENT",ans:"represents",type:"present simple",cat:"Verb-form",exp:"Chủ ngữ <b>The film</b> số ít."},
+{id:62,q:"The young filmmaker __________ with a short independent film.",base:"DEBUT",ans:"debuted",type:"past verb",cat:"Verb-form",exp:"Dùng động từ <b>debuted</b> (ra mắt lần đầu) ở quá khứ."},
+{id:63,q:"The documentary aims to __________ stories from the past.",base:"PRESERVE",ans:"preserve",type:"infinitive",cat:"Verb",exp:"Sau <b>aims to</b> dùng V nguyên mẫu."},
+{id:64,q:"Her childhood experiences __________ her to become a filmmaker.",base:"INSPIRE",ans:"inspired",type:"past verb",cat:"Verb-form",exp:"<b>childhood experiences</b> tác động trong quá khứ."},
+{id:65,q:"The makeup completely __________ the actor's appearance.",base:"TRANSFORM",ans:"transformed",type:"past verb",cat:"Verb-form",exp:"<b>completely</b> bổ nghĩa cho động từ quá khứ."},
+{id:66,q:"The producers __________ the film in a large studio last year.",base:"PRODUCTION",ans:"produced",type:"past verb",cat:"Verb-form",exp:"<b>last year</b> → quá khứ đơn."},
+{id:67,q:"The filmmaker became increasingly __________ in the industry.",base:"INFLUENCE",ans:"influential",type:"adjective",cat:"Adjective",exp:"Sau <b>became increasingly</b> cần tính từ."},
+{id:68,q:"The image was used __________ to represent personal growth.",base:"METAPHOR",ans:"metaphorically",type:"adverb",cat:"Adverb",exp:"Bổ nghĩa cho <b>to represent</b>."},
+{id:69,q:"We need to __________ the essay more clearly.",base:"STRUCTURE",ans:"structure",type:"verb",cat:"Verb",exp:"Sau <b>need to</b> dùng V nguyên mẫu."},
+{id:70,q:"Students should __________ their knowledge to new situations.",base:"TRANSFER",ans:"transfer",type:"verb",cat:"Verb",exp:"Sau <b>should</b> dùng V nguyên mẫu."},
+{id:71,q:"The class __________ the advantages and disadvantages of exams.",base:"DEBATE",ans:"debated",type:"past verb",cat:"Verb-form",exp:"Hành động đã diễn ra."},
+{id:72,q:"The teacher has __________ several alternative assessment methods.",base:"APPLY",ans:"applied",type:"past participle",cat:"Verb-form",exp:"<b>has + V3</b> → thì hiện tại hoàn thành."},
+{id:73,q:"Academic progress is carefully __________ through regular tests.",base:"MEASURE",ans:"measured",type:"past participle",cat:"Verb-form",exp:"Cấu trúc bị động <b>is + V3</b>."},
+{id:74,q:"New vocabulary is often __________ through repeated practice.",base:"MEMORIZE",ans:"memorized",alt:["memorised"],type:"past participle",cat:"Verb-form",exp:"<b>is + V3</b> → câu bị động."},
+{id:75,q:"Students are encouraged to __________ what they learn in class.",base:"APPLICATION",ans:"apply",type:"verb",cat:"Verb",exp:"Sau <b>to</b> dùng V nguyên mẫu."},
+{id:76,q:"The two students __________ the issue for nearly an hour yesterday.",base:"DEBATE",ans:"debated",type:"past verb",cat:"Verb-form",exp:"<b>yesterday</b> → quá khứ đơn."},
+{id:77,q:"The journey was so __________ that everyone needed to rest afterwards.",base:"EXHAUST",ans:"exhausting",type:"adjective",cat:"Adjective",exp:"Mô tả thứ <b>gây mệt</b> → tính từ -ing."},
+{id:78,q:"The travellers felt completely __________ after the long trip.",base:"EXHAUST",ans:"exhausted",type:"adjective/past participle",cat:"Adjective",exp:"Mô tả <b>cảm giác của người</b> → tính từ -ed."},
+{id:79,q:"The hotel offers only __________ accommodation, but it is comfortable.",base:"BASIC",ans:"basic",type:"adjective",cat:"Adjective",exp:"Bổ nghĩa cho <b>accommodation</b>."},
+{id:80,q:"Tourists should protect their personal __________ when travelling.",base:"POSSESS",ans:"possessions",type:"plural noun",cat:"Noun",exp:"Sau <b>personal</b> cần danh từ số nhiều."},
+{id:81,q:"The hotel staff welcomed the guests __________.",base:"SINCERE",ans:"sincerely",type:"adverb",cat:"Adverb",exp:"Bổ nghĩa cho động từ <b>welcomed</b>."},
+{id:82,q:"The young director had great __________ from an early age.",base:"AMBITIOUS",ans:"ambition",type:"noun",cat:"Noun",exp:"Cụm <b>great ambition</b>."},
+{id:83,q:"Her __________ for filmmaking continued to grow.",base:"PASSION",ans:"passion",type:"noun",cat:"Noun",exp:"<b>Her passion</b> là chủ ngữ."},
+{id:84,q:"He is widely considered an __________ figure in modern filmmaking.",base:"INFLUENCE",ans:"influential",type:"adjective",cat:"Adjective",exp:"Sau <b>an</b> cần tính từ bổ nghĩa cho <b>figure</b>."},
+{id:85,q:"The organization works to __________ traditional cultural stories.",base:"PRESERVE",ans:"preserve",type:"verb",cat:"Verb",exp:"Sau <b>works to</b> dùng V nguyên mẫu."},
+{id:86,q:"The film's __________ took nearly half a year.",base:"PRODUCE",ans:"production",type:"noun",cat:"Noun",exp:"<b>The film's production</b> = quá trình sản xuất phim."},
+{id:87,q:"The interview was created __________ for the television channel.",base:"EXCLUSIVE",ans:"exclusively",type:"adverb",cat:"Adverb",exp:"Bổ nghĩa cho <b>was created</b>."},
+{id:88,q:"The opening __________ was filmed near the coast.",base:"SEE",ans:"scene",type:"noun",cat:"Noun",exp:"<b>The opening scene</b> = cảnh mở đầu."},
+{id:89,q:"The __________ discussed the final version of the movie with the actors.",base:"DIRECT",ans:"directors",type:"plural noun",cat:"Noun",exp:"<b>The directors</b> là chủ ngữ số nhiều."},
+{id:90,q:"We watched the end __________ after the movie finished.",base:"CREDIT",ans:"credits",type:"plural noun",cat:"Noun",exp:"Cụm <b>end credits</b> = phần giới thiệu cuối phim."},
+{id:91,q:"Makeup and costumes __________ the actor completely.",base:"TRANSFORM",ans:"transformed",type:"past verb",cat:"Verb-form",exp:"Hành động đã hoàn tất → quá khứ đơn."},
+{id:92,q:"The teacher __________ the students' progress at the end of the semester.",base:"MEASURE",ans:"measured",type:"past verb",cat:"Verb-form",exp:"<b>at the end of the semester</b> → quá khứ đơn."},
+{id:93,q:"Tourists are sometimes more __________ in unfamiliar places.",base:"VULNERABILITY",ans:"vulnerable",type:"adjective",cat:"Adjective",exp:"Sau <b>are</b> cần tính từ."},
+{id:94,q:"The government has __________ the education system in recent years.",base:"REFORM",ans:"reformed",type:"past participle",cat:"Verb-form",exp:"<b>has + V3</b> → hiện tại hoàn thành."},
+{id:95,q:"We were very __________ to learn more about the local culture.",base:"EAGER",ans:"eager",type:"adjective",cat:"Adjective",exp:"Sau <b>were very</b> cần tính từ."},
+{id:96,q:"The movie __________ the director's interest in science fiction.",base:"REPRESENT",ans:"represents",type:"present simple",cat:"Verb-form",exp:"Chủ ngữ <b>The movie</b> số ít → -s."},
+{id:97,q:"Her personal experiences __________ her to write the screenplay.",base:"INSPIRATION",ans:"inspired",type:"past verb",cat:"Verb-form",exp:"Chủ ngữ <b>experiences</b> đã tác động trong quá khứ."},
+{id:98,q:"The students __________ the necessity of exams in class yesterday.",base:"DEBATE",ans:"debated",type:"past verb",cat:"Verb-form",exp:"<b>yesterday</b> → quá khứ đơn."},
+{id:99,q:"My passport __________ last month, so I had to renew it.",base:"EXPIRE",ans:"expired",type:"past verb",cat:"Verb-form",exp:"<b>last month</b> → quá khứ đơn."},
+{id:100,q:"The director __________ his first independent film before joining a major studio.",base:"PRODUCE",ans:"produced",type:"past verb",cat:"Verb-form",exp:"Hành động xảy ra trước một thời điểm trong quá khứ."}
+];
+
+const CATS = ["All","Noun","Adjective","Adverb","Verb","Verb-form"];
+
+/* =========================================================
+   2. STORAGE
+   ========================================================= */
+const KEY="wordFormApp_v1";
+function defaultStore(){
+  return { theme:"light", qStats:{}, mistakes:{}, history:[], lastStudy:null };
+}
+let store = defaultStore();
+try{
+  const raw = localStorage.getItem(KEY);
+  if(raw) store = Object.assign(defaultStore(), JSON.parse(raw));
+}catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+function nowStr(){
+  const d=new Date();
+  const pad=n=>String(n).padStart(2,"0");
+  return pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear()+" "+pad(d.getHours())+":"+pad(d.getMinutes());
+}
+
+/* =========================================================
+   3. HELPERS
+   ========================================================= */
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function shuffle(a){
+  const arr=a.slice();
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+  }
+  return arr;
+}
+function pct(a,b){ return b>0?((a/b)*100).toFixed(1):"0.0"; }
+function normalize(s){
+  return String(s).trim().toLowerCase().replace(/\s+/g," ");
+}
+function isCorrect(userInput, q){
+  const u = normalize(userInput);
+  if(u === normalize(q.ans)) return true;
+  if(q.alt && q.alt.length){
+    for(const a of q.alt){ if(u === normalize(a)) return true; }
+  }
+  return false;
+}
+function firstLetterHint(q){
+  return q.ans[0] + "… (" + q.ans.length + " ký tự)";
+}
+function maskHint(q){
+  // Show first letter + underscores
+  let out = q.ans[0];
+  for(let i=1;i<q.ans.length;i++){
+    const c = q.ans[i];
+    out += (c==="-" || c===" " || c==="'") ? c : "_";
+  }
+  return out;
+}
+
+/* =========================================================
+   4. GLOBAL STATE
+   ========================================================= */
+const state = { view:"dashboard" };
+let session = null;  // {list, idx, userInput, checked, correct, scope, label, start, done}
+
+/* =========================================================
+   5. NAVIGATION
+   ========================================================= */
+document.getElementById("nav").addEventListener("click", function(e){
+  const item = e.target.closest(".nav-item");
+  if(!item) return;
+  go(item.dataset.view);
+});
+
+function go(view){
+  state.view = view;
+  if(view!=="practice" && session && !session.done) session = null;
+  render();
+  window.scrollTo(0,0);
+}
+
+function render(){
+  const el = document.getElementById("view");
+  let html = "";
+  switch(state.view){
+    case "dashboard": html = viewDashboard(); break;
+    case "practice":  html = viewPractice(); break;
+    case "mistakes":  html = viewMistakes(); break;
+    case "progress":  html = viewProgress(); break;
+    case "settings":  html = viewSettings(); break;
+  }
+  el.innerHTML = html;
+  document.querySelectorAll("#nav .nav-item").forEach(function(n){
+    n.classList.toggle("active", n.dataset.view === state.view);
+  });
+  // Focus input
+  if(state.view==="practice" && session && !session.done){
+    const inp = document.getElementById("answerInput");
+    if(inp && !inp.disabled){
+      inp.focus();
+      inp.addEventListener("keydown", function(e){
+        if(e.key==="Enter"){ e.preventDefault(); checkCurrent(); }
+      });
+    }
+  }
+}
+
+/* =========================================================
+   6. STATS
+   ========================================================= */
+function totalAttempts(){
+  let t=0; for(const k in store.qStats) t += store.qStats[k].a||0; return t;
+}
+function totalCorrect(){
+  let t=0; for(const k in store.qStats) t += store.qStats[k].c||0; return t;
+}
+function mistakeCount(){ return Object.keys(store.mistakes).length; }
+function uniqueAttempted(){ return Object.keys(store.qStats).length; }
+
+/* =========================================================
+   7. DASHBOARD
+   ========================================================= */
+function viewDashboard(){
+  const att = totalAttempts(), cor = totalCorrect();
+  const uniq = uniqueAttempted();
+  const mist = mistakeCount();
+  const acc = pct(cor, att);
+  return ''+
+  '<h1>Word Form Master</h1>'+
+  '<p class="sub">100 câu · Mixed Word Form + Verb Forms · B1–B2</p>'+
+  '<div class="stats-row">'+
+    '<div class="stat"><div class="stat-num">'+uniq+'/100</div><div class="stat-lbl">Câu đã luyện</div></div>'+
+    '<div class="stat"><div class="stat-num">'+att+'</div><div class="stat-lbl">Tổng lượt làm</div></div>'+
+    '<div class="stat"><div class="stat-num">'+cor+'</div><div class="stat-lbl">Trả lời đúng</div></div>'+
+    '<div class="stat"><div class="stat-num">'+acc+'%</div><div class="stat-lbl">Độ chính xác</div></div>'+
+    '<div class="stat"><div class="stat-num">'+mist+'</div><div class="stat-lbl">Câu cần ôn lại</div></div>'+
+  '</div>'+
+  '<div class="cards">'+
+    card("practice","✏️","Practice","Luyện 100 câu · Chọn phạm vi theo dạng từ", uniq+" / 100 câu đã thử")+
+    card("mistakes","🔁","Mistakes","Ôn lại những câu đã trả lời sai", mist+" câu")+
+    card("progress","📊","Progress","Xem tiến độ tổng thể và lịch sử làm bài", acc+"% chính xác")+
+    card("settings","⚙️","Settings","Đổi giao diện · Xoá dữ liệu học tập", "")+
+  '</div>';
+}
+function card(view,ic,title,desc,mini){
+  return '<div class="card" onclick="go(\''+view+'\')">'+
+    '<div class="ic">'+ic+'</div>'+
+    '<h3>'+title+'</h3>'+
+    '<p>'+desc+'</p>'+
+    '<div class="mini">'+mini+'</div>'+
+  '</div>';
+}
+
+/* =========================================================
+   8. PRACTICE
+   ========================================================= */
+function practiceSetupHTML(){
+  let mistakes = mistakeCount();
+  return ''+
+  '<h1>✏️ Practice</h1>'+
+  '<p class="sub">Điền đúng dạng của từ trong ngoặc · Có gợi ý và giải thích</p>'+
+  '<div class="panel">'+
+    '<h3>🎯 Luyện toàn bộ</h3>'+
+    '<div class="btn-row">'+
+      '<button class="btn big" onclick="startSession(\'all\')">▶ Luyện 100 câu (xáo trộn)</button>'+
+      '<button class="btn big gray" onclick="startSession(\'random20\')">🎲 Random 20 câu</button>'+
+      '<button class="btn big gray" onclick="startSession(\'random50\')">🎲 Random 50 câu</button>'+
+    '</div>'+
+    '<hr>'+
+    '<h3>📚 Theo dạng từ</h3>'+
+    '<div class="btn-row">'+
+      CATS.filter(c=>c!=="All").map(c=>{
+        const n = QUESTIONS.filter(q=>q.cat===c).length;
+        return '<button class="btn gray" onclick="startSession(\'cat:'+c+'\')">'+c+' ('+n+')</button>';
+      }).join('')+
+    '</div>'+
+    '<hr>'+
+    '<h3>🔁 Ôn câu sai</h3>'+
+    '<div class="btn-row">'+
+      '<button class="btn bad" onclick="startSession(\'mistakes\')"'+(mistakes===0?' disabled':'')+'>❌ Chỉ làm câu sai ('+mistakes+')</button>'+
+    '</div>'+
+  '</div>';
+}
+
+function labelForScope(scope){
+  if(scope==="all") return "Toàn bộ 100 câu";
+  if(scope==="random20") return "Random 20 câu";
+  if(scope==="random50") return "Random 50 câu";
+  if(scope==="mistakes") return "Câu đã trả lời sai";
+  if(scope.indexOf("cat:")===0) return "Dạng: " + scope.slice(4);
+  return scope;
+}
+
+function startSession(scope){
+  let list = QUESTIONS.slice();
+  if(scope==="random20") list = shuffle(list).slice(0,20);
+  else if(scope==="random50") list = shuffle(list).slice(0,50);
+  else if(scope==="mistakes"){
+    list = list.filter(q=>store.mistakes[q.id]);
+    if(!list.length){ alert("Không có câu sai nào để ôn."); return; }
+  }else if(scope.indexOf("cat:")===0){
+    const c = scope.slice(4);
+    list = list.filter(q=>q.cat===c);
+    if(!list.length){ alert("Không có câu nào phù hợp."); return; }
+  }else{
+    list = shuffle(list);
+  }
+  session = {
+    scope: scope,
+    label: labelForScope(scope),
+    list: list,
+    idx: 0,
+    userInput: "",
+    checked: false,
+    correct: false,
+    start: Date.now(),
+    done: false,
+    answers: {}  // id -> {input, correct}
+  };
+  state.view = "practice";
+  render();
+  window.scrollTo(0,0);
+}
+
+function viewPractice(){
+  if(!session) return practiceSetupHTML();
+  if(session.done) return practiceResultHTML();
+  return practiceQuestionHTML();
+}
+
+function practiceQuestionHTML(){
+  const q = session.list[session.idx];
+  const n = session.list.length;
+  const userInput = session.userInput || "";
+  const checked = session.checked;
+
+  // Render sentence with blank filled
+  const parts = q.q.split("__________");
+  const blankText = checked
+    ? (session.correct ? q.ans : esc(userInput || "—"))
+    : (userInput ? esc(userInput) : "________");
+  const blankClass = checked ? (session.correct ? "blank correct" : "blank wrong") : "blank";
+  const sentenceHTML = esc(parts[0]) +
+    '<span class="'+blankClass+'">'+blankText+'</span>' +
+    esc(parts[1] || "");
+
+  let html = ''+
+  '<h1>✏️ Practice</h1>'+
+  '<p class="sub">'+esc(session.label)+'</p>'+
+  '<div class="q-wrap">'+
+    '<div class="q-top">'+
+      '<span>Câu '+(session.idx+1)+' / '+n+'</span>'+
+      '<span><span class="pill">'+esc(q.cat)+'</span> <span class="pill">'+esc(q.type)+'</span></span>'+
+    '</div>'+
+    '<div class="bar"><i style="width:'+((session.idx)/n*100).toFixed(1)+'%"></i></div>'+
+    '<div class="q-sentence">'+sentenceHTML+'</div>'+
+    '<div class="base-word">'+esc(q.base)+'</div>'+
+    '<div class="answer-row">'+
+      '<input type="text" id="answerInput" class="answer-input '+(checked?(session.correct?"ok":"no"):"")+'" '+
+        'placeholder="Nhập dạng đúng..." '+
+        'value="'+esc(userInput)+'" '+
+        (checked?"disabled":"")+
+        ' oninput="updateInput(this.value)" autocomplete="off" autocapitalize="off" spellcheck="false">'+
+    '</div>';
+
+  if(!checked){
+    html += '<div class="btn-row">'+
+      '<button class="btn" onclick="checkCurrent()">✓ Kiểm tra</button>'+
+      '<button class="btn ghost" onclick="showHint()">💡 Gợi ý</button>'+
+      '<button class="btn gray" onclick="skipCurrent()">Bỏ qua →</button>'+
+      '<button class="btn gray" onclick="quitSession()">Thoát</button>'+
+    '</div>';
+  }else{
+    if(session.correct){
+      html += '<div class="fb ok">'+
+        '<div class="fb-title">✓ Chính xác!</div>'+
+        '<div class="exp">'+q.exp+'</div>'+
+      '</div>';
+    }else{
+      html += '<div class="fb no">'+
+        '<div class="fb-title">✗ Chưa đúng</div>'+
+        '<div class="correct-ans">Đáp án đúng: <b>'+esc(q.ans)+'</b> <span class="muted">('+esc(q.type)+')</span></div>'+
+        '<div class="exp">'+q.exp+'</div>'+
+      '</div>';
+    }
+    html += '<div class="btn-row">'+
+      (session.idx < n-1
+        ? '<button class="btn" onclick="nextQuestion()">Câu tiếp theo →</button>'
+        : '<button class="btn ok" onclick="finishSession()">Xem kết quả 🎉</button>')+
+      '<button class="btn gray" onclick="quitSession()">Thoát</button>'+
+    '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function updateInput(v){
+  if(!session) return;
+  session.userInput = v;
+}
+
+function checkCurrent(){
+  if(!session || session.checked) return;
+  const q = session.list[session.idx];
+  const userInput = (session.userInput || "").trim();
+  if(!userInput){
+    document.getElementById("answerInput").focus();
+    return;
+  }
+  session.checked = true;
+  session.correct = isCorrect(userInput, q);
+
+  // Persist
+  if(!store.qStats[q.id]) store.qStats[q.id] = {a:0, c:0};
+  store.qStats[q.id].a++;
+  if(session.correct){
+    store.qStats[q.id].c++;
+    if(store.mistakes[q.id]){
+      store.mistakes[q.id].ok = (store.mistakes[q.id].ok||0)+1;
+      if(store.mistakes[q.id].ok >= 2) delete store.mistakes[q.id];
+    }
+  }else{
+    const m = store.mistakes[q.id] || {times:0, ok:0};
+    m.times = (m.times||0)+1;
+    m.ok = 0;
+    m.last = nowStr();
+    m.userAns = userInput;
+    m.correctAns = q.ans;
+    store.mistakes[q.id] = m;
+  }
+  session.answers[q.id] = {input: userInput, correct: session.correct};
+  store.lastStudy = nowStr();
+  save();
+  render();
+}
+
+function showHint(){
+  if(!session) return;
+  const q = session.list[session.idx];
+  const inp = document.getElementById("answerInput");
+  if(!inp) return;
+  // Progressive hint
+  if(!session.hintLevel) session.hintLevel = 1;
+  else session.hintLevel++;
+  if(session.hintLevel === 1){
+    inp.placeholder = "Bắt đầu bằng: " + q.ans[0];
+    inp.value = q.ans[0];
+    session.userInput = q.ans[0];
+  }else if(session.hintLevel === 2){
+    const masked = maskHint(q);
+    inp.value = masked;
+    inp.placeholder = "";
+    session.userInput = masked;
+  }else{
+    inp.value = q.ans;
+    session.userInput = q.ans;
+  }
+  inp.focus();
+}
+
+function skipCurrent(){
+  if(!session) return;
+  session.userInput = "";
+  session.checked = true;
+  session.correct = false;
+  const q = session.list[session.idx];
+  if(!store.qStats[q.id]) store.qStats[q.id] = {a:0, c:0};
+  store.qStats[q.id].a++;
+  const m = store.mistakes[q.id] || {times:0, ok:0};
+  m.times = (m.times||0)+1;
+  m.ok = 0;
+  m.last = nowStr();
+  m.userAns = "(bỏ qua)";
+  m.correctAns = q.ans;
+  store.mistakes[q.id] = m;
+  session.answers[q.id] = {input:"", correct:false, skipped:true};
+  save();
+  render();
+}
+
+function nextQuestion(){
+  if(!session) return;
+  session.idx++;
+  session.userInput = "";
+  session.checked = false;
+  session.correct = false;
+  session.hintLevel = 0;
+  render();
+  window.scrollTo(0,0);
+}
+
+function finishSession(){
+  if(!session) return;
+  session.done = true;
+  let cor=0, wr=0;
+  session.list.forEach(q=>{
+    const a = session.answers[q.id];
+    if(!a) return;
+    if(a.correct) cor++; else wr++;
+  });
+  const tot = session.list.length;
+  store.history.unshift({
+    date: nowStr(),
+    label: session.label,
+    total: tot,
+    correct: cor,
+    wrong: wr,
+    accuracy: pct(cor, tot),
+    timeUsed: Math.floor((Date.now()-session.start)/1000)
+  });
+  if(store.history.length > 50) store.history.length = 50;
+  store.lastStudy = nowStr();
+  save();
+  render();
+  window.scrollTo(0,0);
+}
+
+function quitSession(){
+  session = null;
+  state.view = "practice";
+  render();
+}
+
+function fmtTime(sec){
+  sec = Math.max(0, Math.floor(sec));
+  const m = Math.floor(sec/60), s = sec%60;
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+function practiceResultHTML(){
+  let cor=0, wr=0;
+  session.list.forEach(q=>{
+    const a = session.answers[q.id];
+    if(!a) return;
+    if(a.correct) cor++; else wr++;
+  });
+  const tot = session.list.length;
+  const score = pct(cor, tot);
+  let msg = "";
+  if(Number(score) >= 90) msg = "🏆 Xuất sắc!";
+  else if(Number(score) >= 75) msg = "👍 Rất tốt!";
+  else if(Number(score) >= 60) msg = "🙂 Khá tốt, cần luyện thêm.";
+  else msg = "💪 Hãy ôn lại và thử lại nhé!";
+  const timeUsed = Math.floor((Date.now()-session.start)/1000);
+
+  let html = ''+
+  '<h1>🎉 Hoàn thành!</h1>'+
+  '<p class="sub">'+esc(session.label)+'</p>'+
+  '<div class="score-hero">'+
+    '<div class="score-big">'+cor+' / '+tot+'</div>'+
+    '<div class="score-msg">'+msg+'</div>'+
+    '<p class="muted" style="margin-top:6px">Chính xác: '+score+'% · Thời gian: '+fmtTime(timeUsed)+'</p>'+
+    '<div class="stats-row" style="margin-top:20px">'+
+      '<div class="stat"><div class="stat-num">'+cor+'</div><div class="stat-lbl">Đúng</div></div>'+
+      '<div class="stat"><div class="stat-num">'+wr+'</div><div class="stat-lbl">Sai / bỏ qua</div></div>'+
+      '<div class="stat"><div class="stat-num">'+score+'%</div><div class="stat-lbl">Độ chính xác</div></div>'+
+    '</div>'+
+    '<div class="btn-row" style="justify-content:center">'+
+      '<button class="btn" onclick="retryIncorrect()">🔁 Làm lại câu sai</button>'+
+      '<button class="btn ghost" onclick="startSession(\''+session.scope+'\')">↺ Làm lại từ đầu</button>'+
+      '<button class="btn gray" onclick="quitSession()">📚 Về Practice</button>'+
+      '<button class="btn gray" onclick="go(\'dashboard\')">🏠 Dashboard</button>'+
+    '</div>'+
+  '</div>'+
+  '<h2>Chi tiết đáp án</h2>';
+
+  session.list.forEach(q=>{
+    const a = session.answers[q.id];
+    const ok = a && a.correct;
+    const skipped = a && a.skipped;
+    const tagCls = ok ? "ok" : "no";
+    const tagTxt = ok ? "Đúng" : (skipped ? "Bỏ qua" : "Sai");
+    const userTxt = a ? (a.skipped ? "(bỏ qua)" : esc(a.input || "—")) : "—";
+    html += '<div class="review-item">'+
+      '<div class="qq"><span class="tag '+tagCls+'">'+tagTxt+'</span>Q'+q.id+'. '+esc(q.q)+'</div>'+
+      '<div class="aa muted">Từ gốc: <strong>'+esc(q.base)+'</strong></div>'+
+      '<div class="aa muted">Bạn trả lời: <strong>'+userTxt+'</strong></div>'+
+      (ok ? "" : '<div class="aa muted">Đáp án đúng: <strong>'+esc(q.ans)+'</strong> <span class="pill">'+esc(q.type)+'</span></div>')+
+      '<div class="aa">💡 '+q.exp+'</div>'+
+    '</div>';
+  });
+  return html;
+}
+
+function retryIncorrect(){
+  if(!session) return;
+  const wrong = session.list.filter(q=>{
+    const a = session.answers[q.id];
+    return !a || !a.correct;
+  });
+  if(!wrong.length){ alert("Bạn không có câu nào sai. Tuyệt vời!"); return; }
+  session = {
+    scope: session.scope,
+    label: "Làm lại — " + session.label,
+    list: shuffle(wrong),
+    idx: 0,
+    userInput: "",
+    checked: false,
+    correct: false,
+    start: Date.now(),
+    done: false,
+    answers: {}
+  };
+  render();
+  window.scrollTo(0,0);
+}
+
+/* =========================================================
+   9. MISTAKES
+   ========================================================= */
+function viewMistakes(){
+  const ids = Object.keys(store.mistakes).map(Number).sort((a,b)=>a-b);
+  let html = '<h1>🔁 Mistakes</h1><p class="sub">Những câu bạn trả lời sai sẽ được lưu lại tự động</p>';
+  if(!ids.length){
+    html += '<div class="empty"><span class="ic">🎯</span>Chưa có lỗi nào. Hãy luyện tập để hệ thống ghi nhận nhé!</div>';
+    return html;
+  }
+  html += '<div class="btn-row" style="margin-bottom:18px">'+
+    '<button class="btn bad" onclick="startSession(\'mistakes\')">▶ Ôn lại câu sai ('+ids.length+')</button>'+
+  '</div>';
+  ids.forEach(id=>{
+    const q = QUESTIONS.find(x=>x.id===id);
+    if(!q) return;
+    const m = store.mistakes[id];
+    html += '<div class="review-item">'+
+      '<div class="qq"><span class="tag no">Sai ×'+m.times+'</span>Q'+q.id+'. '+esc(q.q)+'</div>'+
+      '<div class="aa muted">Từ gốc: <strong>'+esc(q.base)+'</strong></div>'+
+      '<div class="aa muted">Bạn đã trả lời: <strong>'+esc(m.userAns||"—")+'</strong></div>'+
+      '<div class="aa muted">Đáp án đúng: <strong>'+esc(m.correctAns||"—")+'</strong></div>'+
+      '<div class="aa">💡 '+q.exp+'</div>'+
+      '<div class="muted" style="font-size:12px;margin-top:6px">Lần cuối: '+esc(m.last||"")+' · <span class="pill">'+esc(q.cat)+'</span></div>'+
+    '</div>';
+  });
+  return html;
+}
+
+/* =========================================================
+   10. PROGRESS
+   ========================================================= */
+function viewProgress(){
+  const att = totalAttempts();
+  const cor = totalCorrect();
+  const uniq = uniqueAttempted();
+  const mist = mistakeCount();
+
+  let html = ''+
+  '<h1>📊 Progress</h1>'+
+  '<p class="sub">Tiến độ được lưu tự động trên trình duyệt này</p>'+
+
+  '<h2>Tổng quan</h2>'+
+  '<div class="panel">'+
+    '<div class="muted">'+uniq+' / 100 câu đã luyện · '+att+' lượt làm</div>'+
+    '<div class="bar" style="margin-top:10px"><i style="width:'+pct(uniq,100)+'%"></i></div>'+
+    '<p class="muted" style="margin-top:8px">'+pct(uniq,100)+'% câu đã được thử</p>'+
+  '</div>'+
+
+  '<h2>Luyện tập</h2>'+
+  '<div class="stats-row">'+
+    '<div class="stat"><div class="stat-num">'+att+'</div><div class="stat-lbl">Tổng lượt làm</div></div>'+
+    '<div class="stat"><div class="stat-num">'+cor+'</div><div class="stat-lbl">Trả lời đúng</div></div>'+
+    '<div class="stat"><div class="stat-num">'+(att-cor)+'</div><div class="stat-lbl">Trả lời sai</div></div>'+
+    '<div class="stat"><div class="stat-num">'+pct(cor,att)+'%</div><div class="stat-lbl">Độ chính xác</div></div>'+
+    '<div class="stat"><div class="stat-num">'+mist+'</div><div class="stat-lbl">Câu cần ôn</div></div>'+
+  '</div>'+
+
+  '<h2>Theo dạng từ</h2>'+
+  '<table><thead><tr><th>Dạng</th><th class="num">Số câu</th><th class="num">Đã thử</th><th class="num">Đúng</th><th class="num">Chính xác</th></tr></thead><tbody>';
+  CATS.filter(c=>c!=="All").forEach(c=>{
+    const inCat = QUESTIONS.filter(q=>q.cat===c);
+    let attempted = 0, correct = 0, totalAtt = 0;
+    inCat.forEach(q=>{
+      const st = store.qStats[q.id];
+      if(st){ attempted++; totalAtt += st.a||0; correct += st.c||0; }
+    });
+    html += '<tr><td>'+c+'</td><td class="num">'+inCat.length+'</td><td class="num">'+attempted+'</td>'+
+      '<td class="num">'+correct+'</td><td class="num">'+pct(correct,totalAtt)+'%</td></tr>';
+  });
+  html += '</tbody></table>';
+
+  html += '<h2>Lịch sử làm bài</h2>';
+  if(!store.history.length){
+    html += '<div class="empty"><span class="ic">✏️</span>Chưa có lịch sử làm bài.</div>';
+  }else{
+    html += '<table><thead><tr><th>Ngày</th><th>Phạm vi</th><th class="num">Đúng</th><th class="num">Tổng</th><th class="num">%</th><th class="num">Thời gian</th></tr></thead><tbody>';
+    store.history.slice(0,15).forEach(h=>{
+      html += '<tr><td>'+esc(h.date)+'</td><td>'+esc(h.label)+'</td>'+
+        '<td class="num">'+h.correct+'</td><td class="num">'+h.total+'</td>'+
+        '<td class="num">'+h.accuracy+'%</td><td class="num">'+fmtTime(h.timeUsed)+'</td></tr>';
+    });
+    html += '</tbody></table>';
+  }
+
+  if(store.lastStudy){
+    html += '<p class="muted" style="margin-top:24px">🕒 Lần học gần nhất: '+esc(store.lastStudy)+'</p>';
+  }
+  return html;
+}
+
+/* =========================================================
+   11. SETTINGS
+   ========================================================= */
+function viewSettings(){
+  const dark = store.theme==="dark";
+  return ''+
+  '<h1>⚙️ Settings</h1>'+
+  '<p class="sub">Tuỳ chỉnh giao diện và quản lý dữ liệu học tập</p>'+
+  '<div class="panel">'+
+    '<h3>Giao diện</h3>'+
+    '<div class="btn-row">'+
+      '<button class="btn '+(dark?"gray":"")+'" onclick="setTheme(\'light\')">☀️ Light mode</button>'+
+      '<button class="btn '+(dark?"":"gray")+'" onclick="setTheme(\'dark\')">🌙 Dark mode</button>'+
+    '</div>'+
+    '<hr>'+
+    '<h3>Dữ liệu</h3>'+
+    '<p class="muted">Toàn bộ tiến độ được lưu trong <b>localStorage</b> của trình duyệt. App không cần internet hay tài khoản.</p>'+
+    '<div class="btn-row">'+
+      '<button class="btn bad" onclick="confirmReset()">🗑 Xoá toàn bộ tiến độ</button>'+
+    '</div>'+
+    '<hr>'+
+    '<h3>Thông tin bộ đề</h3>'+
+    '<p class="muted">100 câu · Mixed Word Form + Verb Forms<br>'+
+    'Noun · Adjective · Adverb · Verb · Verb-form (thì, V-ing, V3, bị động)</p>'+
+  '</div>';
+}
+function setTheme(t){
+  store.theme = t;
+  save();
+  document.documentElement.setAttribute("data-theme", t==="dark"?"dark":"light");
+  render();
+}
+function confirmReset(){
+  if(confirm("Xoá toàn bộ tiến độ học tập?\n\n(Ngân hàng câu hỏi vẫn giữ nguyên.)")){
+    const theme = store.theme;
+    store = defaultStore();
+    store.theme = theme;
+    save();
+    session = null;
+    alert("Đã xoá toàn bộ tiến độ.");
+    go("dashboard");
+  }
+}
+
+/* =========================================================
+   12. INIT
+   ========================================================= */
+document.documentElement.setAttribute("data-theme", store.theme==="dark"?"dark":"light");
+render();
+</script>
+</body>
+</html>
